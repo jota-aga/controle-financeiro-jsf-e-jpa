@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+ 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
+	
+	<h:panelGroup styleClass="filtros">
+		<h:panelGroup styleClass="input-filtro">
+			<p:outputLabel for="categoria-filtro" value="Categoria:"/>
+			<p:selectOneMenu  id="categoria-filtro" value="#{bean.categoriaFiltro}" converter="#{bean.categoriaConverter}" styleClass="categoria-filtro">
+				<f:selectItem itemLabel="Todas" itemValue="#{null}" noSelectionOption="true"/>
+				<f:selectItems value="#{bean.categorias}" var="categoria" itemLabel="#{categoria.titulo}" itemValue="#{categoria}" />
+			</p:selectOneMenu>
+		</h:panelGroup>
+		
+		<h:panelGroup styleClass="input-filtro">
+			<p:outputLabel for="data-filtro" value="Data:"/>
+			<p:inputMask id="data-filtro" mask="99/9999" value="#{bean.dataFiltro}" styleClass="data-filtro"/>
+		</h:panelGroup>
+		
+		<p:commandButton title="Aplicar Filtro" icon="fa fa-filter" actionListener="#{bean.aplicarFiltro()}" update="mainForm:tabelaMovimentacao mainForm:info-movimentacao" 
+		process="@this data-filtro categoria-filtro" styleClass="botao-filtro"/>
+		
+	</h:panelGroup>
+</ui:fragment>

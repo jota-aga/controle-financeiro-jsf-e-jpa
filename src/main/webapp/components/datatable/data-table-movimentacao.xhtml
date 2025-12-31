@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+ 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
+	
+	<p:dialog modal="true" closeOnEscape="true" header="Registro de Movimentações" id="dialogTabelaMovimentacao" 
+		widgetVar="dialogTabelaMovimentacaoWidgetVar" resizable="false" >
+		
+		<h:panelGroup id="info-movimentacao" styleClass="info-movimentacao-panel-group">
+		
+			<h:panelGroup styleClass="esquerda">
+				<h:panelGroup rendered="#{bean.conta.contaSaldo != null}">
+					<h2>Saldo: R$ #{bean.conta.contaSaldo.saldo}</h2>
+				</h:panelGroup>
+				
+				<h:panelGroup rendered="#{bean.conta.saiu ge bean.conta.entrou}">
+					<h3>Gastou: R$ #{bean.conta.totalMovimentado}</h3>
+				</h:panelGroup>
+					
+				<h:panelGroup rendered="#{bean.conta.saiu lt bean.conta.entrou}">
+						<h3>Economizou: R$ #{bean.conta.totalMovimentado}</h3>
+				</h:panelGroup>
+			</h:panelGroup>	
+			
+			<h:panelGroup styleClass="direita">
+				<p id="entrou">Entrou: R$ #{bean.conta.entrou}</p>
+				<p >Saiu: R$ #{bean.conta.saiu}</p>
+			</h:panelGroup>
+			
+		</h:panelGroup>
+		
+		<ui:include src="/components/filter/filter-movimentacoes.xhtml">
+			<ui:param name="bean" value="#{bean}"/>		
+		</ui:include>
+		
+		<div style="height:5px"/>
+		
+		<p:dataTable id="tabelaMovimentacao" value="#{bean.movimentacoes}" paginator="true" rows="6" paginatorPosition="top" emptyMessage="Nenhuma Movimentação realizada" var="movimentacao" 
+			rowKey="movimentacao.id" styleClass="tabela-movimentacao" >
+			<p:column headerText="Categoria">
+				<h:outputText value="#{movimentacao.categoria.titulo}"/>
+			</p:column>
+			
+			
+			<p:column headerText="Data">
+				<h:outputText value="#{movimentacao.data}"/>
+			</p:column>
+			
+			<p:column headerText="Tipo">
+				<h:outputText value="#{movimentacao.tipoDeMovimentacao.tipoDeMovimentacao}"/>
+			</p:column>
+			
+			<p:column headerText="Valor">
+				<h:outputText value="R$#{movimentacao.valor}"/>
+			</p:column>
+			
+			<p:column headerText="Prestação">
+				<h:outputText value="#{movimentacao.prestacaoAtual} / #{movimentacao.totalPrestacoes}"/>
+			</p:column>
+			
+			<p:column headerText="Ações">
+				<p:commandButton icon="fa fa-eye" title="Ver Mais Detalhes" actionListener="#{bean.maisDetalhes(movimentacao)}" update="mainForm:movimentacaoDetalhesDialog" 
+				oncomplete="PF('movimentacaoDetalhesDialogWidgetVar').show()">
+					<p:resetInput target="mainForm:movimentacaoDetalhesDialog"/>
+				</p:commandButton>
+				
+				<ui:include src="/components/buttons/button-editar.xhtml">
+					<ui:param name="entidade" value="#{movimentacao}"/>
+					<ui:param name="componentesAtualizar" value="mainForm:dialogMovimentacao mainForm:tabelaConta tabelaMovimentacao"/>
+					<ui:param name="bean" value="#{bean}"/>
+					<ui:param name="dialogWidgetVar" value="dialogMovimentacaoWidgetVar"/>
+					<ui:param name="dialog" value="mainForm:dialogMovimentacao"/>
+				</ui:include>
+				
+				<ui:include src="/components/buttons/button-excluir.xhtml">
+					<ui:param name="componentesAtualizar" value="mainForm:tabelaMovimentacao mainForm:tabelaConta mainForm:info-movimentacao mainForm:growl"/>
+					<ui:param name="entidade" value="#{movimentacao}"/>
+					<ui:param name="bean" value="#{bean}"/>
+					<ui:param name="complementoMensagem" value="Movimentação no valor de R$#{movimentacao.valor}"/>
+				</ui:include>
+			</p:column>
+		</p:dataTable>
+	</p:dialog>
+	
+	<p:dialog header="Mais Detalhes" id="movimentacaoDetalhesDialog" widgetVar="movimentacaoDetalhesDialogWidgetVar" resizable="false" modal="true" styleClass="mais-detalhes-movimentacao">
+		<p:panelGrid columns="1" styleClass="ui-noborder">
+		
+			<h:panelGroup styleClass="mais-detalhes-panel-group">
+				<p:outputLabel for="@next" value="Descrição:"/>
+				<h:outputText value="#{bean.movimentacao.descricao}" styleClass="mais-detalhes-text"/>
+			</h:panelGroup>
+			
+			<h:panelGroup styleClass="mais-detalhes-panel-group">
+				<p:outputLabel for="@next" value="Categoria:"/>
+				<h:outputText value="#{bean.movimentacao.categoria.titulo}" styleClass="mais-detalhes-text"/>
+			</h:panelGroup>	
+			
+			<h:panelGroup styleClass="mais-detalhes-panel-group">
+				<p:outputLabel for="@next" value="Valor:"/>
+				<h:outputText value="R$#{bean.movimentacao.valor}"/>
+			</h:panelGroup>
+				
+			<h:panelGroup styleClass="mais-detalhes-panel-group">	
+				<p:outputLabel for="@next" value="Prestações:"/>
+				<h:outputText value="#{bean.movimentacao.prestacaoAtual} / #{bean.movimentacao.totalPrestacoes}" styleClass="mais-detalhes-text"/>
+			</h:panelGroup>
+					
+			<h:panelGroup styleClass="mais-detalhes-panel-group">	
+				<p:outputLabel for="@next" value="Data e Horário:"/>
+				<h:outputText value="#{bean.movimentacao.data} | #{bean.movimentacao.diaDaSemana} | #{bean.movimentacao.time}" />
+			</h:panelGroup>
+		</p:panelGrid>
+	</p:dialog>		
+</ui:fragment>

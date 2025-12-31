@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+ 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
+	
+	
+
+	<p:dialog id="dialogMovimentacao" header="Nova Movimentação" modal="true" resizable="false" widgetVar="dialogMovimentacaoWidgetVar">
+
+		<p:panelGrid columns="1" rendered="#{bean.movimentacao ne null}" styleClass="ui-panelgrid-blank">
+			<h:panelGroup>
+				<p:message id="valor-messages" for="valor"/>
+				<p:outputLabel value="Valor:" for="valor" styleClass="outputs"/>
+				<br/>
+				<p:inputNumber id="valor" decimalPlaces="2" minValue="0" symbol="R$" value="#{bean.movimentacao.valor}" inputStyle="display:flex; margin: 10px 0 10px 0;"/>
+			</h:panelGroup>
+			
+			<h:panelGroup id="panelPrestacoes">
+				<h:panelGroup rendered="#{!bean.isEntrada()}">
+					<p:outputLabel for="prestacoes" value="Prestações:" styleClass="outputs"/>
+					<br/>
+					<p:spinner id="prestacoes" min="1" value="#{bean.movimentacao.totalPrestacoes}" styleClass="inputs" size="1"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<p:message id="tipo-movimento-messages" for="TipoMovimentacao"/>
+				<p:outputLabel for="TipoMovimentacao" value="Tipo de Movimentação:" styleClass="outputs"/>
+				<p:selectOneRadio id="TipoMovimentacao" value="#{bean.movimentacao.tipoDeMovimentacao}" unselectable="true" styleClass="inputs">
+					<f:selectItems value="#{bean.tiposDeMovimentacao}" var="tipo" itemLabel="#{tipo.tipoDeMovimentacao}" itemValue="#{tipo}"/>
+					<f:ajax render="panelPrestacoes"/>
+				</p:selectOneRadio>
+			</h:panelGroup>
+			
+			<h:panelGroup>
+				<p:message id="categoria-messages" for="categoria"/>
+				<p:outputLabel value="Categoria:" for="categoria" styleClass="outputs"/>
+				<br/>
+				<p:selectOneMenu id="categoria" value="#{bean.movimentacao.categoria}" converter="#{bean.categoriaConverter}" styleClass="inputs">
+					<f:selectItems value="#{bean.categorias}" var="categoria" itemLabel="#{categoria.titulo}" itemValue="#{categoria}" />
+				</p:selectOneMenu>
+			</h:panelGroup>
+			
+			
+			<h:panelGroup >
+				<p:message id="descricao-messages" for="descricao"/>
+				<p:outputLabel for="descricao" value="Descrição:" styleClass="outputs"/>
+				<br/>
+				<p:inputTextarea id="descricao" value="#{bean.movimentacao.descricao}" style="display:flex; margin: 10px 0 10px 0"/>
+			</h:panelGroup>
+			
+			
+			<p:commandButton actionListener="#{bean.salvarMovimentacao}" oncomplete="if(!args.validationFailed) PF('dialogMovimentacaoWidgetVar').hide()"
+			process="@this dialogMovimentacao" value="Salvar" icon="fa fa-check" 
+			update="mainForm:tabelaMovimentacao mainForm:tabelaConta descricao-messages categoria-messages tipo-movimento-messages 
+			valor-messages mainForm:info-movimentacao" styleClass="botao-salvar"/>
+		</p:panelGrid>
+	</p:dialog>
+</ui:fragment>
