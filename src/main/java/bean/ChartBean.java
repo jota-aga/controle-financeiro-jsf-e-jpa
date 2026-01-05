@@ -10,9 +10,10 @@ import javax.inject.Named;
 
 import dto.ChartDTO;
 import entity.Categoria;
-import entity.Movimentacao;
+import entity.Parcela;
 import repository.CategoriaDAO;
 import repository.MovimentacaoDAO;
+import repository.ParcelaDAO;
 
 @Named
 @ViewScoped
@@ -29,6 +30,9 @@ public class ChartBean implements Serializable{
 	@Inject
 	MovimentacaoDAO movimentacaoDAO;
 	
+	@Inject
+	ParcelaDAO parcelasDAO;
+	
 	private List<Categoria> categorias;
 	
 	private ChartDTO chartDTO;
@@ -41,34 +45,34 @@ public class ChartBean implements Serializable{
 		categorias = categoriaDAO.procurarTodos();
 	}
 	
-	public void gerarGraficoPorCategoria() {
+	public void pupularGraficoDeGastosPorCategoria() {
 		for(Categoria c : categorias) {
-			List<Movimentacao> movimentacoes = movimentacaoDAO.procurarPorCategoria(c);
+			List<Parcela> parcelas = parcelasDAO.procurarPorCategoria(c);
 			
-			if(movimentacoes != null && !movimentacoes.isEmpty()) {
-				chartDTO.adicionarGastosPorCategoria(c, movimentacoes);
+			if(parcelas != null && !parcelas.isEmpty()) {
+				chartDTO.adicionarGastosPorCategoria(c, parcelas);
 			}
 		}
 	}
 	
-	public void gerarMovimentacoesPorPeriodo() {
-		LocalDate data = LocalDate.now().plusMonths(1);
+	public void pupularGraficoDeGastosPorPeriodo() {
+		LocalDate data = LocalDate.now();
 		for(int  i = 0; i < 5; i++) {
 			int mes = data.getMonthValue();
 			int ano = data.getYear();
 			data = data.minusMonths(1);
 			
-			List<Movimentacao> movimentacoes = movimentacaoDAO.procurarPorMesEAno(mes, ano);
+			List<Parcela> parcelas = parcelasDAO.procurarPorMesEAno(mes, ano);
 			
-			chartDTO.adicionarGastoPorMes(movimentacoes, mes, ano);
+			chartDTO.adicionarGastoPorMes(parcelas, mes, ano);
 		}
 	}
 	
 	public void gerarGraficos() {
 		prepararChartDTO();
 		procurarTodasCategorias();
-		gerarGraficoPorCategoria();
-		gerarMovimentacoesPorPeriodo();
+		pupularGraficoDeGastosPorCategoria();
+		pupularGraficoDeGastosPorPeriodo();
 	}
 
 	public ChartDTO getChartDTO() {

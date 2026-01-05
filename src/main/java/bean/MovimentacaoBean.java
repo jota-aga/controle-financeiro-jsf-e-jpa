@@ -1,8 +1,8 @@
 package bean;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -12,18 +12,17 @@ import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
 
-import controller.GenericoController;
-import controller.MovimentacaoController;
 import converter.CategoriaConverter;
 import entity.Categoria;
 import entity.Conta;
-import entity.ContaSaldo;
 import entity.Movimentacao;
-import enums.TipoDeConta;
+import entity.Parcela;
 import enums.TipoDeMovimentacao;
 import repository.CategoriaDAO;
 import repository.GenericoDAO;
 import repository.MovimentacaoDAO;
+import repository.ParcelaDAO;
+import service.MovimentacaoService;
 import util.FacesMessagesUtil;
 
 @Named
@@ -34,12 +33,9 @@ public class MovimentacaoBean implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	private GenericoController genericoController;
 	
 	@Inject
-	private MovimentacaoController movimentacaoController;
+	private MovimentacaoService movimentacaoService;
 	
 	@Inject 
 	GenericoDAO genericoDAO;
@@ -49,6 +45,9 @@ public class MovimentacaoBean implements Serializable{
 	
 	@Inject
 	private MovimentacaoDAO acaoDAO;
+	
+	@Inject
+	private ParcelaDAO parcelaDAO;
 	
 	@Inject
 	ContaBean contaBean;
@@ -68,13 +67,17 @@ public class MovimentacaoBean implements Serializable{
 	private Categoria categoriaFiltro;
 	
 	private LocalDate data = LocalDate.now();
+		
+	private List<Parcela> parcelas;
+	
+	private Parcela parcela;
 	
 	public void prepararNovo(Conta conta) {
 		procurarTodasCategorias();
 		movimentacao = new Movimentacao();
 		movimentacao.setConta(conta);
 		movimentacao.setTipoDeMovimentacao(TipoDeMovimentacao.SAIDA);
-		movimentacao.setTotalPrestacoes(1);
+		movimentacao.setQuantidadeDeParcelas(1);
 	}
 	
 	public void prepararEdicao(Movimentacao movimentacao) {
@@ -84,29 +87,32 @@ public class MovimentacaoBean implements Serializable{
 	
 	public void salvarMovimentacao() {
 		if(movimentacao.getId() != null) {
-			movimentacaoController.salvarExistenteMovimentacao(movimentacao);
+			movimentacaoService.salvarExistenteMovimentacao(movimentacao);
+			
 			this.procurarTodas(conta);
 			this.conta = movimentacao.getConta();
 			contaBean.procurarTodos();
 			aplicarFiltro();
 		}
 		else {
-			movimentacaoController.salvarNovaMovimentacao(movimentacao);
+			
+			movimentacaoService.salvarNovaMovimentacao(movimentacao);
 		}
+		
 		FacesMessagesUtil.addMessageSemId(FacesMessage.SEVERITY_INFO, "Movimentação Salva", "Movimentação Salva com Sucesso!");
 		RequestContext.getCurrentInstance().update("mainForm:growl");
 	}
 	
 	public void excluir(Movimentacao movimentacao) {
 		
-		movimentacaoController.excluirMovimentacao(movimentacao);
+		movimentacaoService.excluirMovimentacao(movimentacao);
 		
 		this.procurarTodas(conta);
 		this.conta = movimentacao.getConta();
 		contaBean.procurarTodos();
 		aplicarFiltro();
+		
 		FacesMessagesUtil.addMessageSemId(FacesMessage.SEVERITY_INFO, "Movimentação Excluída", "Movimentação Excluída com Sucesso!");
-
 	}
 	
 	public void aplicarFiltro() {
@@ -118,28 +124,28 @@ public class MovimentacaoBean implements Serializable{
 			ano = Integer.valueOf(textoData[1]);
 			if(categoriaFiltro != null) {
 				
-				movimentacoes = acaoDAO.procurarPorMesEAnoEContaECategoria(mes, ano, conta.getId(), categoriaFiltro);
+				parcelas = parcelaDAO.procurarPorContaEDataECategoria(conta, mes, ano, categoriaFiltro);
 			}
 			else if(categoriaFiltro == null) {
-				movimentacoes = acaoDAO.procurarPorMesEAnoEConta(mes, ano, conta.getId());
+				parcelas = parcelaDAO.procurarPorContaEData(conta, mes, ano);
 			}
 		}
 		
 		else if( categoriaFiltro != null) {
-			movimentacoes = acaoDAO.procurarPorContaECategoria(conta.getId(), categoriaFiltro);
+			parcelas = parcelaDAO.procurarPorContaECategoria(conta, categoriaFiltro);
 		}
 		else {
 			procurarPorDataAtualEConta(conta);
 		}
-		conta.setTotalMovimentado(movimentacoes);
+		conta.setTotalMovimentado(parcelas);
 	}
 	
 	public void procurarTodasCategorias() {
 		this.categorias = categoriaDAO.procurarTodos();
 	}
 	
-	public void maisDetalhes(Movimentacao movimentacao) {
-		this.movimentacao = movimentacao;
+	public void maisDetalhes(Parcela parcela) {
+		this.parcela = parcela;
 	}
 	
 	public void procurarTodas(Conta conta) {
@@ -148,11 +154,14 @@ public class MovimentacaoBean implements Serializable{
 	}
 	
 	public void procurarPorDataAtualEConta(Conta conta) {
-		this.movimentacoes = acaoDAO.procurarPorMesEAnoEConta(data.getMonthValue(), data.getYear(), conta.getId());
-		conta.setTotalMovimentado(this.movimentacoes);
+		this.parcelas = parcelaDAO.procurarPorContaEData(conta, data.getMonthValue(), data.getYear());
+		conta.setTotalMovimentado(this.parcelas);
 		
 		this.conta = conta;
-		this.dataFiltro = String.valueOf(data.getMonthValue()) + "/" + String.valueOf(data.getYear());
+		
+		this.dataFiltro = LocalDate.now().format(DateTimeFormatter.ofPattern("MM/yyyy"));
+		System.out.println(dataFiltro);
+		
 		procurarTodasCategorias();
 	}
 
@@ -183,10 +192,6 @@ public class MovimentacaoBean implements Serializable{
 
 	public Conta getConta() {
 		return conta;
-	}
-	
-	public boolean isEntrada() {
-		return this.movimentacao.getTipoDeMovimentacao() == TipoDeMovimentacao.ENTRADA? true :  false;
 	}
 
 	public LocalDate getData() {
@@ -219,12 +224,25 @@ public class MovimentacaoBean implements Serializable{
 	}
 	
 	public boolean ehEdicao() {
-		
 		if(movimentacao.getId() != null) {
-			System.out.println("BOOOOOOOOOOOOOOOOLEAN:" + true);
 			return true;
 		}
-		System.out.println("BOOOOOOOOOOOOOOOOLEAN:" + false);
 		return false;
+	}
+
+	public List<Parcela> getParcelas() {
+		return parcelas;
+	}
+
+	public void setParcelas(List<Parcela> parcelas) {
+		this.parcelas = parcelas;
+	}
+
+	public Parcela getParcela() {
+		return parcela;
+	}
+
+	public void setParcela(Parcela parcela) {
+		this.parcela = parcela;
 	}
 }

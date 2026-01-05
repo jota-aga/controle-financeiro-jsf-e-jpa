@@ -1,23 +1,20 @@
 package entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -40,21 +37,12 @@ public class Movimentacao {
 	private BigDecimal valor;
 	
 	@Column
-	@Min(message = "O total de prestações deve ser maior que zero", value = 1)
-	private int totalPrestacoes;
-	
-	@Column
-	private int prestacaoAtual;
-	
-	@Column
-	private LocalDate data;
-	
-	@Column
-	private LocalTime time;
-	
-	@Column
 	@NotBlank(message = "Descrição não deve ser vazia")
 	private String descricao;
+	
+	@Enumerated(value = EnumType.STRING)
+	@NotNull(message = "Tipo de Movimentação deve ser selecionada")
+	private TipoDeMovimentacao tipoDeMovimentacao;
 	
 	@ManyToOne
 	@NotNull(message = "Alguma categoria deve ser selecionada")
@@ -63,10 +51,12 @@ public class Movimentacao {
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private Conta conta;
 	
-	@Enumerated(value = EnumType.STRING)
-	@NotNull(message = "Tipo de Movimentação deve ser selecionada")
-	private TipoDeMovimentacao tipoDeMovimentacao;
-
+	@Min(value = 1, message = "Valor deve ser maior que zero")
+	private int quantidadeDeParcelas;
+	
+	@OneToMany(mappedBy = "movimentacao", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private List<Parcela> parcelas;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -81,34 +71,6 @@ public class Movimentacao {
 
 	public void setValor(BigDecimal valor) {
 		this.valor = valor;
-	}
-
-	public int getTotalPrestacoes() {
-		return totalPrestacoes;
-	}
-
-	public void setTotalPrestacoes(int totalPrestacoes) {
-		this.totalPrestacoes = totalPrestacoes;
-	}
-
-	public String getData() {
-		return data.format(DateTimeFormatter.ofPattern("d/MM/yyyy"));
-	}
-
-	public void setData(LocalDate data) {
-		this.data = data;
-	}
-	
-	public String getDiaDaSemana() {
-		return data.getDayOfWeek().getDisplayName(TextStyle.SHORT, new Locale("PT", "BR"));
-	}
-
-	public LocalTime getTime() {
-		return time;
-	}
-
-	public void setTime(LocalTime time) {
-		this.time = time;
 	}
 
 	public Conta getConta() {
@@ -143,11 +105,27 @@ public class Movimentacao {
 		this.categoria = categoria;
 	}
 
-	public int getPrestacaoAtual() {
-		return prestacaoAtual;
+	public int getQuantidadeDeParcelas() {
+		return quantidadeDeParcelas;
 	}
 
-	public void setPrestacaoAtual(int prestacaoAtual) {
-		this.prestacaoAtual = prestacaoAtual;
+	public void setQuantidadeDeParcelas(int quantidadeDeParcelas) {
+		this.quantidadeDeParcelas = quantidadeDeParcelas;
+	}
+
+	public List<Parcela> getParcelas() {
+		return parcelas;
+	}
+
+	public void setParcelas(List<Parcela> parcelas) {
+		this.parcelas = parcelas;
+	}
+	
+	public void addParcela(Parcela parcela) {
+		this.parcelas.add(parcela);
+	}
+	
+	public void removeParcela(Parcela parcela) {
+		this.parcelas.remove(parcela);
 	}
 }

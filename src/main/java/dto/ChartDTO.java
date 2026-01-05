@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import entity.Categoria;
-import entity.Movimentacao;
+import entity.Parcela;
 import enums.TipoDeMovimentacao;
 
 public class ChartDTO {
@@ -19,12 +18,12 @@ public class ChartDTO {
 		this.listaParaGraficoDeGastoPorMes = new HashMap<>();
 	}
 
-	public void adicionarGastosPorCategoria(Categoria categoria, List<Movimentacao> movimentacoes) {
+	public void adicionarGastosPorCategoria(Categoria categoria, List<Parcela> parcelas) {
 		BigDecimal gasto = BigDecimal.ZERO;
 		
-		for(Movimentacao m : movimentacoes) {
-			if(m.getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA) {
-				gasto = gasto.add(m.getValor());
+		for(Parcela p : parcelas) {
+			if(p.getMovimentacao().getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA) {
+				gasto = gasto.add(p.getMovimentacao().getValor());
 			}
 			
 		}
@@ -32,17 +31,19 @@ public class ChartDTO {
 		listaParaGraficoDeGastoPorCategoria.put(categoria.getTitulo(), gasto.doubleValue());
 	}
 	
-	public void adicionarGastoPorMes(List<Movimentacao> movimentacoes, int mes, int ano) {
+	public void adicionarGastoPorMes(List<Parcela> parcelas, int mes, int ano) {
 		BigDecimal gasto = BigDecimal.ZERO;
-		for(Movimentacao m : movimentacoes) {
-			if(m.getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA) {
-				gasto = gasto.add(m.getValor());
+		
+		if(parcelas != null && !parcelas.isEmpty()) {
+			for(Parcela p : parcelas) {
+				if(p.getMovimentacao().getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA)
+					gasto = gasto.add(p.getMovimentacao().getValor());
 			}
+			
+			StringBuilder mesEAno = new StringBuilder(String.valueOf(mes) + "/" + String.valueOf(ano));
+			
+			listaParaGraficoDeGastoPorMes.put(mesEAno.toString(), gasto.doubleValue());
 		}
-		
-		StringBuilder mesEAno = new StringBuilder(String.valueOf(mes) + "/" + String.valueOf(ano));
-		
-		listaParaGraficoDeGastoPorMes.put(mesEAno.toString(), gasto.doubleValue());
 	}
 	
 	public String getJsonParaGraficoGastosPorCategoria() {

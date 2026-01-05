@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
 
-	<p:dialog id="dialogConta" header="Nova Conta" modal="true" resizable="false" widgetVar="dialogContaWidgetVar" >
+	<p:dialog id="dialogConta" header="Nova Conta" modal="true" resizable="false" widgetVar="dialogContaWidgetVar" position="top">
 		<p:panelGrid columns="1" rendered="#{bean.conta ne null}" styleClass="ui-panelgrid-blank">
 			<h:panelGroup>
 				<p:message id="banco-messages" for="banco"/>

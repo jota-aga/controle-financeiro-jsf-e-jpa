@@ -13,11 +13,9 @@ import org.primefaces.context.RequestContext;
 
 import controller.GenericoController;
 import entity.Conta;
-import entity.ContaSaldo;
 import enums.TipoDeConta;
 import repository.ContaDAO;
-import repository.ContaSaldoDAO;
-import repository.GenericoDAO;
+import service.ContaService;
 import util.FacesMessagesUtil;
 
 @Named
@@ -32,22 +30,17 @@ public class ContaBean implements Serializable {
 	@Inject
 	private ContaDAO contaDAO;
 	
-	@Inject
-	private ContaSaldoDAO contaSaldoDAO;
-	
 	@Inject 
-	private GenericoController controller;
+	private GenericoController genericoController;
 	
 	@Inject
-	private GenericoDAO genericoDAO;
+	private ContaService contaService;
 	
 	private List<Conta> contas;
 	
 	private Conta conta;
 	
 	private BigDecimal saldo;
-	
-	private ContaSaldo contaSaldo;
 		
 	public void prepararNovo() {
 		conta = new Conta();
@@ -63,36 +56,16 @@ public class ContaBean implements Serializable {
 	
 	public void salvarConta() {
 		
-		if(this.conta.getTipoDeConta() != TipoDeConta.CREDITO) {
-			if(this.conta.getId() == null || this.conta.getContaSaldo() == null) {
-				contaSaldo = new ContaSaldo();
-				conta.setContaSaldo(contaSaldo);
-				contaSaldo.setConta(conta);
-			}
-			
-			conta.getContaSaldo().setSaldo(saldo);
-			
-		}
+		contaService.salvarConta(conta, saldo);
 		
-		if(conta.getId() != null) {
-			if(this.conta.getTipoDeConta() == TipoDeConta.CREDITO && this.conta.getContaSaldo() != null) {
-				contaSaldo = this.conta.getContaSaldo();
-				
-				this.conta.setContaSaldo(null);
-				this.contaSaldo.setConta(null);
-				controller.salvar(contaSaldo);
-				controller.excluir(ContaSaldo.class, contaSaldo.getId());
-			}
-		}
-		
-		controller.salvar(conta);
 		FacesMessagesUtil.addMessageSemId(FacesMessage.SEVERITY_INFO, "Conta Salva", "Conta Salva Com Sucesso!");
 		RequestContext.getCurrentInstance().update("mainForm:growl");
 		this.procurarTodos();
 	}
 	
 	public void excluir(Conta conta) {
-		controller.excluir(conta.getClass(), conta.getId());
+		genericoController.excluir(conta.getClass(), conta.getId());
+		
 		FacesMessagesUtil.addMessageSemId(FacesMessage.SEVERITY_INFO, "Conta Excluída", "Conta Excluída Com Sucesso!");
 		this.procurarTodos();
 	}

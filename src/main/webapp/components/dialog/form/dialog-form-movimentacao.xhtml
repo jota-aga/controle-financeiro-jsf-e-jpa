@@ -8,7 +8,7 @@
 	
 	
 
-	<p:dialog id="dialogMovimentacao" header="Nova Movimentação" modal="true" resizable="false" widgetVar="dialogMovimentacaoWidgetVar">
+	<p:dialog id="dialogMovimentacao" header="Nova Movimentação" modal="true" resizable="false" widgetVar="dialogMovimentacaoWidgetVar" position="top">
 
 		<p:panelGrid columns="1" rendered="#{bean.movimentacao ne null}" styleClass="ui-panelgrid-blank">
 			<h:panelGroup>
@@ -18,12 +18,10 @@
 				<p:inputNumber id="valor" decimalPlaces="2" minValue="0" symbol="R$" value="#{bean.movimentacao.valor}" inputStyle="display:flex; margin: 10px 0 10px 0;"/>
 			</h:panelGroup>
 			
-			<h:panelGroup id="panelPrestacoes">
-				<h:panelGroup rendered="#{!bean.isEntrada()}">
-					<p:outputLabel for="prestacoes" value="Prestações:" styleClass="outputs"/>
+			<h:panelGroup id="parcelasPanelGroup">
+					<p:outputLabel for="parcelas" value="Parcelas:" styleClass="outputs"/>
 					<br/>
-					<p:spinner id="prestacoes" min="1" value="#{bean.movimentacao.totalPrestacoes}" styleClass="inputs" size="1"/>
-				</h:panelGroup>
+					<p:spinner id="parcelas" min="1" value="#{bean.movimentacao.quantidadeDeParcelas}" styleClass="inputs" size="1"/>
 			</h:panelGroup>
 			
 			<h:panelGroup>
@@ -39,8 +37,9 @@
 				<p:message id="categoria-messages" for="categoria"/>
 				<p:outputLabel value="Categoria:" for="categoria" styleClass="outputs"/>
 				<br/>
-				<p:selectOneMenu id="categoria" value="#{bean.movimentacao.categoria}" converter="#{bean.categoriaConverter}" styleClass="inputs">
+				<p:selectOneMenu id="categoria" value="#{bean.movimentacao.categoria}" converter="#{bean.categoriaConverter}" styleClass="inputs" >
 					<f:selectItems value="#{bean.categorias}" var="categoria" itemLabel="#{categoria.titulo}" itemValue="#{categoria}" />
+					<f:ajax render="button-salvar"/>
 				</p:selectOneMenu>
 			</h:panelGroup>
 			
@@ -52,11 +51,16 @@
 				<p:inputTextarea id="descricao" value="#{bean.movimentacao.descricao}" style="display:flex; margin: 10px 0 10px 0"/>
 			</h:panelGroup>
 			
-			
-			<p:commandButton actionListener="#{bean.salvarMovimentacao}" oncomplete="if(!args.validationFailed) PF('dialogMovimentacaoWidgetVar').hide()"
-			process="@this dialogMovimentacao" value="Salvar" icon="fa fa-check" 
-			update="mainForm:tabelaMovimentacao mainForm:tabelaConta descricao-messages categoria-messages tipo-movimento-messages 
-			valor-messages mainForm:info-movimentacao" styleClass="botao-salvar"/>
+			<h:panelGroup id="button-salvar">
+				<p:commandButton actionListener="#{bean.salvarMovimentacao}" oncomplete="if(!args.validationFailed) PF('dialogMovimentacaoWidgetVar').hide()"
+				process="@this dialogMovimentacao" value="Salvar" icon="fa fa-check" 
+				update="mainForm:tabelaMovimentacao mainForm:tabelaConta descricao-messages categoria-messages tipo-movimento-messages 
+				valor-messages mainForm:info-movimentacao" styleClass="botao-salvar" disabled="#{bean.categorias == null || bean.categorias.isEmpty()}" />
+				
+				<p:commandButton value="Fechar" icon="fa fa-times" oncomplete="PF('dialogMovimentacaoWidgetVar').hide()">
+					<p:resetInput target="@form:dialogMovimentacao"/>
+				</p:commandButton>
+			</h:panelGroup>
 		</p:panelGrid>
 	</p:dialog>
 </ui:fragment>

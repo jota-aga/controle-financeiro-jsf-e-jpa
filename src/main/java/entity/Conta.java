@@ -96,14 +96,14 @@ public class Conta {
 		return totalMovimentado;
 	}
 
-	public void setTotalMovimentado(List<Movimentacao> acoes) {
+	public void setTotalMovimentado(List<Parcela> parcelas) {
 		totalMovimentado = BigDecimal.ZERO;
 		saiu = BigDecimal.ZERO;
 		entrou = BigDecimal.ZERO;
 		
-		for(Movimentacao m : acoes) {
-			BigDecimal valor = m.getValor();
-			if(m.getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA) {
+		for(Parcela p : parcelas) {
+			BigDecimal valor = p.getMovimentacao().getValor();
+			if(p.getMovimentacao().getTipoDeMovimentacao() == TipoDeMovimentacao.SAIDA) {
 				saiu = saiu.add(valor);
 			}
 			else {

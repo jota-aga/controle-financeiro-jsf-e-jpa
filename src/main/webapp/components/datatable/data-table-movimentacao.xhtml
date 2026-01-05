@@ -7,7 +7,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" >
 	
 	<p:dialog modal="true" closeOnEscape="true" header="Registro de Movimentações" id="dialogTabelaMovimentacao" 
-		widgetVar="dialogTabelaMovimentacaoWidgetVar" resizable="false" >
+		widgetVar="dialogTabelaMovimentacaoWidgetVar" resizable="false" position="top">
 		
 		<h:panelGroup id="info-movimentacao" styleClass="info-movimentacao-panel-group">
 		
@@ -38,37 +38,36 @@
 		
 		<div style="height:5px"/>
 		
-		<p:dataTable id="tabelaMovimentacao" value="#{bean.movimentacoes}" paginator="true" rows="6" paginatorPosition="top" emptyMessage="Nenhuma Movimentação realizada" var="movimentacao" 
+		<p:dataTable id="tabelaMovimentacao" value="#{bean.parcelas}" paginator="true" rows="6" paginatorPosition="top" emptyMessage="Nenhuma Movimentação realizada" var="parcela" 
 			rowKey="movimentacao.id" styleClass="tabela-movimentacao" >
 			<p:column headerText="Categoria">
-				<h:outputText value="#{movimentacao.categoria.titulo}"/>
+				<h:outputText value="#{parcela.movimentacao.categoria.titulo}"/>
 			</p:column>
-			
-			
+	
 			<p:column headerText="Data">
-				<h:outputText value="#{movimentacao.data}"/>
+				<h:outputText value="#{parcela.stringData}"/>
 			</p:column>
 			
 			<p:column headerText="Tipo">
-				<h:outputText value="#{movimentacao.tipoDeMovimentacao.tipoDeMovimentacao}"/>
+				<h:outputText value="#{parcela.movimentacao.tipoDeMovimentacao.tipoDeMovimentacao}"/>
 			</p:column>
 			
 			<p:column headerText="Valor">
-				<h:outputText value="R$#{movimentacao.valor}"/>
+				<h:outputText value="R$#{parcela.movimentacao.valor}"/>
 			</p:column>
 			
-			<p:column headerText="Prestação">
-				<h:outputText value="#{movimentacao.prestacaoAtual} / #{movimentacao.totalPrestacoes}"/>
+			<p:column headerText="Parcelas:">
+				<h:outputText value="#{parcela.parcela} / #{parcela.movimentacao.quantidadeDeParcelas}"/>
 			</p:column>
 			
 			<p:column headerText="Ações">
-				<p:commandButton icon="fa fa-eye" title="Ver Mais Detalhes" actionListener="#{bean.maisDetalhes(movimentacao)}" update="mainForm:movimentacaoDetalhesDialog" 
+				<p:commandButton icon="fa fa-eye" title="Ver Mais Detalhes" actionListener="#{bean.maisDetalhes(parcela)}" update="mainForm:movimentacaoDetalhesDialog" 
 				oncomplete="PF('movimentacaoDetalhesDialogWidgetVar').show()">
 					<p:resetInput target="mainForm:movimentacaoDetalhesDialog"/>
 				</p:commandButton>
 				
 				<ui:include src="/components/buttons/button-editar.xhtml">
-					<ui:param name="entidade" value="#{movimentacao}"/>
+					<ui:param name="entidade" value="#{parcela.movimentacao}"/>
 					<ui:param name="componentesAtualizar" value="mainForm:dialogMovimentacao mainForm:tabelaConta tabelaMovimentacao"/>
 					<ui:param name="bean" value="#{bean}"/>
 					<ui:param name="dialogWidgetVar" value="dialogMovimentacaoWidgetVar"/>
@@ -77,7 +76,7 @@
 				
 				<ui:include src="/components/buttons/button-excluir.xhtml">
 					<ui:param name="componentesAtualizar" value="mainForm:tabelaMovimentacao mainForm:tabelaConta mainForm:info-movimentacao mainForm:growl"/>
-					<ui:param name="entidade" value="#{movimentacao}"/>
+					<ui:param name="entidade" value="#{parcela.movimentacao}"/>
 					<ui:param name="bean" value="#{bean}"/>
 					<ui:param name="complementoMensagem" value="Movimentação no valor de R$#{movimentacao.valor}"/>
 				</ui:include>
@@ -90,27 +89,27 @@
 		
 			<h:panelGroup styleClass="mais-detalhes-panel-group">
 				<p:outputLabel for="@next" value="Descrição:"/>
-				<h:outputText value="#{bean.movimentacao.descricao}" styleClass="mais-detalhes-text"/>
+				<h:outputText value="#{bean.parcela.movimentacao.descricao}" styleClass="mais-detalhes-text"/>
 			</h:panelGroup>
 			
 			<h:panelGroup styleClass="mais-detalhes-panel-group">
 				<p:outputLabel for="@next" value="Categoria:"/>
-				<h:outputText value="#{bean.movimentacao.categoria.titulo}" styleClass="mais-detalhes-text"/>
+				<h:outputText value="#{bean.parcela.movimentacao.categoria.titulo}" styleClass="mais-detalhes-text"/>
 			</h:panelGroup>	
 			
 			<h:panelGroup styleClass="mais-detalhes-panel-group">
 				<p:outputLabel for="@next" value="Valor:"/>
-				<h:outputText value="R$#{bean.movimentacao.valor}"/>
+				<h:outputText value="R$#{bean.parcela.movimentacao.valor}"/>
 			</h:panelGroup>
 				
 			<h:panelGroup styleClass="mais-detalhes-panel-group">	
-				<p:outputLabel for="@next" value="Prestações:"/>
-				<h:outputText value="#{bean.movimentacao.prestacaoAtual} / #{bean.movimentacao.totalPrestacoes}" styleClass="mais-detalhes-text"/>
+				<p:outputLabel for="@next" value="Parcelas:"/>
+				<h:outputText value="#{bean.parcela.parcela} / #{bean.parcela.movimentacao.quantidadeDeParcelas}" styleClass="mais-detalhes-text"/>
 			</h:panelGroup>
 					
 			<h:panelGroup styleClass="mais-detalhes-panel-group">	
 				<p:outputLabel for="@next" value="Data e Horário:"/>
-				<h:outputText value="#{bean.movimentacao.data} | #{bean.movimentacao.diaDaSemana} | #{bean.movimentacao.time}" />
+				<h:outputText value="#{bean.parcela.stringData} | #{bean.parcela.diaDaSemana} | #{bean.parcela.horario}" />
 			</h:panelGroup>
 		</p:panelGrid>
 	</p:dialog>		

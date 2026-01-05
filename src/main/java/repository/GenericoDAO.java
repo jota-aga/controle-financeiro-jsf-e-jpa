@@ -16,7 +16,8 @@ public class GenericoDAO implements Serializable{
 	private EntityManager em;
 	
 	public Object salvar(Object t) {
-		return em.merge(t);
+		t = em.merge(t);
+		return t;
 	}
 	
 	public void excluir(Class<?> classe , Integer id) {
