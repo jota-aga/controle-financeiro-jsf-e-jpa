@@ -17,12 +17,9 @@
 				</h:panelGroup>
 				
 				<h:panelGroup rendered="#{bean.conta.saiu ge bean.conta.entrou}">
-					<h3>Gastou: R$ #{bean.conta.totalMovimentado}</h3>
+					<h3>#{bean.conta.feedback}: R$ #{bean.conta.totalMovimentado}</h3>
 				</h:panelGroup>
-					
-				<h:panelGroup rendered="#{bean.conta.saiu lt bean.conta.entrou}">
-						<h3>Economizou: R$ #{bean.conta.totalMovimentado}</h3>
-				</h:panelGroup>
+									
 			</h:panelGroup>	
 			
 			<h:panelGroup styleClass="direita">
@@ -32,7 +29,7 @@
 			
 		</h:panelGroup>
 		
-		<ui:include src="/components/filter/filter-movimentacoes.xhtml">
+		<ui:include src="/components/header/header-datatable-movimentacoes.xhtml">
 			<ui:param name="bean" value="#{bean}"/>		
 		</ui:include>
 		
@@ -56,7 +53,7 @@
 				<h:outputText value="R$#{parcela.movimentacao.valor}"/>
 			</p:column>
 			
-			<p:column headerText="Parcelas:">
+			<p:column headerText="Parcelas">
 				<h:outputText value="#{parcela.parcela} / #{parcela.movimentacao.quantidadeDeParcelas}"/>
 			</p:column>
 			
@@ -112,5 +109,9 @@
 				<h:outputText value="#{bean.parcela.stringData} | #{bean.parcela.diaDaSemana} | #{bean.parcela.horario}" />
 			</h:panelGroup>
 		</p:panelGrid>
-	</p:dialog>		
+	</p:dialog>
+	
+	<ui:include src="/components/datatable/data-table-movimentacao-for-pdf.xhtml">
+		<ui:param name="bean" value="#{bean}"/>
+	</ui:include>		
 </ui:fragment>

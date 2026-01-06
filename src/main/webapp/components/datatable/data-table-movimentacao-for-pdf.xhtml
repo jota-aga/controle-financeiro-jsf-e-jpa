@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<p:dataTable id="tabelaMovimentacaoPDF" value="#{bean.parcelas}" var="parcela" rendered="false">
+		<p:column headerText="Categoria">
+			<h:outputText value="#{parcela.movimentacao.categoria.titulo}" />
+		</p:column>
+
+		<p:column headerText="Data">
+			<h:outputText value="#{parcela.stringData}" />
+		</p:column>
+		
+		<p:column headerText="Horario">
+			<h:outputText value="#{parcela.horario}" />
+		</p:column>
+
+		<p:column headerText="Tipo">
+			<h:outputText
+				value="#{parcela.movimentacao.tipoDeMovimentacao}" />
+		</p:column>
+
+		<p:column headerText="Valor">
+			<h:outputText value="R$#{parcela.movimentacao.valor}" />
+		</p:column>
+
+		<p:column headerText="Parcelas">
+			<h:outputText
+				value="#{parcela.parcela} / #{parcela.movimentacao.quantidadeDeParcelas}" />
+		</p:column>
+		
+		<p:column headerText="Descricao">
+			<h:outputText value="#{parcela.movimentacao.descricao}" />
+		</p:column>
+	</p:dataTable>
+</ui:fragment>

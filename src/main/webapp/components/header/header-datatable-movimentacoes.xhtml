@@ -21,7 +21,13 @@
 		</h:panelGroup>
 		
 		<p:commandButton title="Aplicar Filtro" icon="fa fa-filter" actionListener="#{bean.aplicarFiltro()}" update="mainForm:tabelaMovimentacao mainForm:info-movimentacao" 
-		process="@this data-filtro categoria-filtro" styleClass="botao-filtro"/>
+		process="@this data-filtro categoria-filtro" styleClass="botao-header"/>
+		
+		<p:spacer width="18"/>
+		
+		<p:commandButton value="PDF" ajax="false" actionListener="#{bean.setNomePDF()}" styleClass="botao-header">
+			<p:dataExporter type="pdf" target="tabelaMovimentacaoPDF" fileName="#{bean.nomePDF}" preProcessor="#{bean.preProcessadorPDF}" />
+		</p:commandButton>
 		
 	</h:panelGroup>
 </ui:fragment>

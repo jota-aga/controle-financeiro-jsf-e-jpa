@@ -1,7 +1,9 @@
 package bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -12,11 +14,18 @@ import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
 
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+
 import converter.CategoriaConverter;
 import entity.Categoria;
 import entity.Conta;
 import entity.Movimentacao;
 import entity.Parcela;
+import enums.TipoDeConta;
 import enums.TipoDeMovimentacao;
 import repository.CategoriaDAO;
 import repository.GenericoDAO;
@@ -71,6 +80,8 @@ public class MovimentacaoBean implements Serializable{
 	private List<Parcela> parcelas;
 	
 	private Parcela parcela;
+	
+	private String nomePDF;
 	
 	public void prepararNovo(Conta conta) {
 		procurarTodasCategorias();
@@ -164,6 +175,46 @@ public class MovimentacaoBean implements Serializable{
 		
 		procurarTodasCategorias();
 	}
+	
+	public void preProcessadorPDF(Object documento) throws IOException, BadElementException, DocumentException {
+		
+		Document pdf = (Document) documento;		
+		
+		pdf.open();
+		
+		Font tituloEstilo = new Font(Font.NORMAL ,16, Font.BOLD);
+				
+		Font subTituloEstilo = new Font(Font.NORMAL , 14, Font.BOLD);
+			
+		String tituloPDF = "Extrato da conta: " + conta.getBanco() + " | " + conta.getTipoDeConta().getTipoDeConta();
+		
+		String data = "Data: " + dataFiltro;
+		
+		
+			
+		pdf.add(new Paragraph(tituloPDF, tituloEstilo));
+		pdf.add(new Paragraph(""));
+		
+		if(conta.getTipoDeConta() != TipoDeConta.CREDITO) {
+			pdf.add(new Paragraph("Saldo: R$"+conta.getContaSaldo().getSaldo(), subTituloEstilo));
+			pdf.add(new Paragraph(""));
+		}
+		
+		pdf.add(new Paragraph("Entrou: R$"+ conta.getEntrou() + " | Saiu: R$"+conta.getSaiu(), subTituloEstilo));
+		pdf.add(new Paragraph(""));
+		pdf.add(new Paragraph(data, subTituloEstilo));
+		pdf.add(new Paragraph(" "));
+	}
+	
+	public void setNomePDF() {
+		DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+		
+		String horarioAgora = LocalTime.now().format(formatter);
+		
+		nomePDF = conta.getBanco()+"_"+dataFiltro.replace("/", "-")+"_"+horarioAgora;
+		
+		nomePDF.replaceAll("[:/]", "-");
+	}
 
 	public CategoriaConverter getCategoriaConverter() {
 		categoriaConverter = new CategoriaConverter(categorias);
@@ -244,5 +295,9 @@ public class MovimentacaoBean implements Serializable{
 
 	public void setParcela(Parcela parcela) {
 		this.parcela = parcela;
+	}
+
+	public String getNomePDF() {
+		return nomePDF;
 	}
 }

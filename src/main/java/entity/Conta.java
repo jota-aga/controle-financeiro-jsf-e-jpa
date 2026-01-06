@@ -51,6 +51,9 @@ public class Conta {
 	
 	@Transient 
 	private BigDecimal saiu;
+	
+	@Transient
+	private String feedback;
 
 	public Integer getId() {
 		return id;
@@ -111,7 +114,14 @@ public class Conta {
 			}
 		}
 		
-		totalMovimentado =  saiu.compareTo(entrou) == 1 ? saiu.subtract(entrou) : entrou.subtract(saiu);
+		if(saiu.compareTo(entrou) == 1) {
+			totalMovimentado = saiu.subtract(entrou);
+			feedback = "Gastou";
+		}
+		else {
+			totalMovimentado = entrou.subtract(saiu);
+			feedback = "Economizou";
+		}
 	}
 
 	public BigDecimal getEntrou() {
@@ -128,5 +138,9 @@ public class Conta {
 
 	public void setSaiu(BigDecimal saiu) {
 		this.saiu = saiu;
+	}
+
+	public String getFeedback() {
+		return feedback;
 	}
 }
