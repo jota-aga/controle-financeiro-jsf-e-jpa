@@ -28,7 +28,7 @@
 				<p:message id="tipo-movimento-messages" for="TipoMovimentacao"/>
 				<p:outputLabel for="TipoMovimentacao" value="Tipo de Movimentação:" styleClass="outputs"/>
 				<p:selectOneRadio id="TipoMovimentacao" value="#{bean.movimentacao.tipoDeMovimentacao}" unselectable="true" styleClass="inputs">
-					<f:selectItems value="#{bean.tiposDeMovimentacao}" var="tipo" itemLabel="#{tipo.tipoDeMovimentacao}" itemValue="#{tipo}"/>
+					<f:selectItems value="#{bean.tiposDeMovimentacao}" var="tipoDeMovimentacao" itemLabel="#{tipoDeMovimentacao.tipo}" itemValue="#{tipoDeMovimentacao}"/>
 					<f:ajax render="panelPrestacoes"/>
 				</p:selectOneRadio>
 			</h:panelGroup>

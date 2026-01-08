@@ -51,7 +51,9 @@ public class ChartDTO {
 		json.append("['Categoria', 'Gastos'],");
 		
 		for(Map.Entry<String, Double> entry : listaParaGraficoDeGastoPorCategoria.entrySet()) {
-			json.append("['" + entry.getKey() + "'," + entry.getValue() + "],");
+			String parteJson = String.format("['%s', %s],", entry.getKey(), entry.getValue().toString());
+			
+			json.append(parteJson);
 		}
 		
 		int indexDaUltimaVirgula =  json.lastIndexOf(",");
@@ -67,7 +69,9 @@ public class ChartDTO {
 		json.append("['Mês', 'Gastos'],");
 		
 		for(Map.Entry<String, Double> entry : listaParaGraficoDeGastoPorMes.entrySet()) {
-			json.append("['" + entry.getKey() + "'," + entry.getValue() + "],"); 
+			String parteJson = String.format("['%s', %s],", entry.getKey(), entry.getValue().toString());
+			
+			json.append(parteJson);
 		}
 		
 		int indexDaUltimaVirgula = json.lastIndexOf(",");

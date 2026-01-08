@@ -186,7 +186,7 @@ public class MovimentacaoBean implements Serializable{
 				
 		Font subTituloEstilo = new Font(Font.NORMAL , 14, Font.BOLD);
 			
-		String tituloPDF = "Extrato da conta: " + conta.getBanco() + " | " + conta.getTipoDeConta().getTipoDeConta();
+		String tituloPDF = "Extrato da conta: " + conta.getBanco() + " | " + conta.getTipoDeConta().getTipo();
 		
 		String data = "Data: " + dataFiltro;
 		

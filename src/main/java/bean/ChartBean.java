@@ -56,8 +56,11 @@ public class ChartBean implements Serializable{
 	}
 	
 	public void pupularGraficoDeGastosPorPeriodo() {
+		int meses = 5;
+		
 		LocalDate data = LocalDate.now();
-		for(int  i = 0; i < 5; i++) {
+		
+		for(int  i = 0; i < meses; i++) {
 			int mes = data.getMonthValue();
 			int ano = data.getYear();
 			data = data.minusMonths(1);

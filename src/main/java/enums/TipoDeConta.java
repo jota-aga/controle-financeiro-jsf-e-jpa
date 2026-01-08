@@ -5,13 +5,13 @@ public enum TipoDeConta {
 	CREDITO("Crédito"),
 	PIX("Pix");
 	
-	private String tipoDeConta;
+	private String tipo;
 	
-	TipoDeConta(String tipoDeConta){
-		this.tipoDeConta = tipoDeConta;
+	TipoDeConta(String tipo){
+		this.tipo = tipo;
 	}
 
-	public String getTipoDeConta() {
-		return tipoDeConta;
+	public String getTipo() {
+		return tipo;
 	}
 }

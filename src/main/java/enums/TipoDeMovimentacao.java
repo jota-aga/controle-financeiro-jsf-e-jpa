@@ -4,13 +4,13 @@ public enum TipoDeMovimentacao {
 	ENTRADA("Entrada"),
 	SAIDA("Saída");
 	
-	private String tipoDeMovimentacao;
+	private String tipo;
 
-	TipoDeMovimentacao(String tipoDeMovimentacao) {
-		this.tipoDeMovimentacao = tipoDeMovimentacao;
+	TipoDeMovimentacao(String tipo) {
+		this.tipo = tipo;
 	}
 
-	public String getTipoDeMovimentacao() {
-		return tipoDeMovimentacao;
+	public String getTipo() {
+		return tipo;
 	}
 }

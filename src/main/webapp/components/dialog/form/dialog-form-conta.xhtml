@@ -21,7 +21,7 @@
 				<br/>
 				<p:selectOneMenu id="tipoDeConta" value="#{bean.conta.tipoDeConta}" styleClass="inputs">
 					<f:selectItem itemLabel="Selecione..."/>
-					<f:selectItems value="#{bean.tiposDeConta}" var="tipo" itemLabel="#{tipo.tipoDeConta}" itemValue="#{tipo}" />
+					<f:selectItems value="#{bean.tiposDeConta}" var="tipoDeConta" itemLabel="#{tipoDeConta.tipo}" itemValue="#{tipo}" />
 					<f:ajax render="saldoGroup"/>
 				</p:selectOneMenu>
 			</h:panelGroup>
