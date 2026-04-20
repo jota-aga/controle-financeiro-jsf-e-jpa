@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:fragment xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<div class="conteudo">
+		
+		<ui:include src="/components/buttons/button-novo.xhtml">
+			<ui:param name="bean" value="#{bean}"/>
+			<ui:param name="dialog" value="dialogCategoria"/>
+			<ui:param name="dialogWidgetVar" value="dialogCategoriaWidgetVar"/>
+		</ui:include>
+		
+		<p:dataTable id="tabelaCategoria" value="#{bean.categorias}"
+			paginator="true" rows="6" paginatorPosition="bottom"
+			emptyMessage="Nenhuma Categoria Cadastrada" var="categoria"
+			rowKey="categoria.id" styleClass="tabela-categoria">
+
+			<p:column headerText="Título">
+				<h:outputText value="#{categoria.titulo}" />
+			</p:column>
+
+			<p:column headerText="Ações"
+				rendered="#{categoria.titulo != 'Sem Categoria'}">
+				<ui:include src="/components/buttons/button-editar.xhtml">
+					<ui:param name="bean" value="#{bean}"/>
+					<ui:param name="entidade" value="#{categoria}"/>
+					<ui:param name="componentesAtualizar" value="mainForm:dialogCategoria"/>
+					<ui:param name="dialog" value="mainForm:dialogCategoria"/>
+					<ui:param name="dialogWidgetVar" value="dialogCategoriaWidgetVar"/>
+				</ui:include>
+				
+				<ui:include src="/components/buttons/button-excluir.xhtml">
+					<ui:param name="componentesAtualizar" value="mainForm:tabelaCategoria"/>
+					<ui:param name="bean" value="#{bean}"/>
+					<ui:param name="entidade" value="#{categoria}"/>
+					<ui:param name="complementoMensagem" value="Categoria do titulo: #{categoria.titulo}"/>
+				</ui:include>
+			</p:column>
+
+		</p:dataTable>
+
+		<ui:include src="/components/dialog/form/dialog-form-categoria.xhtml">
+			<ui:param name="bean" value="#{bean}" />
+		</ui:include>
+	</div>
+</ui:fragment>

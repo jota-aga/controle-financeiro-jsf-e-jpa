@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+ 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+	template="/WEB-INF/layout.xhtml">
+	
+	<f:metadata>
+		<f:viewAction action="#{chartBean.gerarGraficos()}"/>
+	</f:metadata>
+	<ui:define name="head">
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	    <script type="text/javascript">
+	      google.charts.load('current', {'packages':['corechart']});
+	      google.charts.setOnLoadCallback(drawChart);
+	
+	      function drawChart() {
+	
+	        var data = google.visualization.arrayToDataTable(
+	        	#{chartBean.chartDTO.jsonParaGraficoGastosPorCategoria}
+	    	);
+	
+	        var options = {
+	          title: 'Gastos Por Categoria',
+	          fontSize: 28
+	        };
+	
+	        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+	
+	        chart.draw(data, options);
+	      }
+	    </script>
+	    <script type="text/javascript">
+	      google.charts.load("current", {packages:["corechart"]});
+	      google.charts.setOnLoadCallback(drawChart);
+	      function drawChart() {
+	        var data = google.visualization.arrayToDataTable(
+	        	#{chartBean.chartDTO.jsonParaGraficoGastosPorMes}
+	        );
+	
+	        var options = {
+	          title: 'Gastos Nos Últimos 5 Meses',
+	          pieHole: 0.4,
+	          fontSize: 28
+	        };
+	
+	        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+	        chart.draw(data, options);
+	      }
+	   </script>
+	</ui:define>
+	
+	<ui:define name="title">Home</ui:define>
+	
+	<ui:define name="conteudo">
+		<div id="conteudo">
+			<h1 id="titulo-index">Gráficos</h1>
+			<div id="piechart" style="width: 900px; height: 700px;"/>
+			<div id="donutchart" style="width: 900px; height: 700px;"/>
+		</div>
+	</ui:define>
+	
+</ui:composition>
