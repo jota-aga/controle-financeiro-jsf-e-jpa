@@ -29,11 +29,13 @@ public class MovimentacaoDAO implements Serializable {
 		em.remove(movimentacao);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarTodos(){
 		Query query = em.createQuery("from Movimentacao");
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorMesEAnoEConta(int mes, int ano, int idConta){
 		Query query = em.createQuery("select m from Movimentacao m where MONTH(m.data) = :mes and YEAR(m.data) = :ano and m.conta.id = :idConta");
 		query.setParameter("mes", mes);
@@ -42,6 +44,7 @@ public class MovimentacaoDAO implements Serializable {
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorMesEAno(int mes, int ano){
 		Query query = em.createQuery("select m from Movimentacao m where MONTH(m.data) = :mes and YEAR(m.data) = :ano");
 		query.setParameter("mes", mes);
@@ -49,6 +52,7 @@ public class MovimentacaoDAO implements Serializable {
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorMesEAnoEContaECategoria(int mes, int ano, int idConta, Categoria categoria){
 		String jpql = "select m from Movimentacao m where MONTH(m.data) = :mes and YEAR(m.data) = :ano and m.conta.id = :idConta and m.categoria = :categoria";
 		Query query = em.createQuery(jpql);
@@ -59,6 +63,7 @@ public class MovimentacaoDAO implements Serializable {
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorContaECategoria(int idConta, Categoria categoria){
 		String jpql = "select m from Movimentacao m where m.conta.id = :idConta and m.categoria = :categoria";
 		Query query = em.createQuery(jpql);
@@ -67,18 +72,21 @@ public class MovimentacaoDAO implements Serializable {
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorMes(int mes){
 		Query query = em.createQuery("select m from Movimentacao m where MONTH(m.data) = :mes and m.conta.id = :idConta");
 		query.setParameter("mes", mes);
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorConta(int idConta){
 		Query query = em.createQuery("select m from Movimentacao m where m.conta.id = :idConta");
 		query.setParameter("idConta", idConta);
 		return query.getResultList();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Movimentacao> procurarPorCategoria( Categoria categoria){
 		String jpql = "select m from Movimentacao m where m.categoria = :categoria";
 		Query query = em.createQuery(jpql);

@@ -25,7 +25,6 @@ import entity.Categoria;
 import entity.Conta;
 import entity.Movimentacao;
 import entity.Parcela;
-import enums.TipoDeConta;
 import enums.TipoDeMovimentacao;
 import repository.CategoriaDAO;
 import repository.GenericoDAO;
@@ -194,11 +193,6 @@ public class MovimentacaoBean implements Serializable{
 			
 		pdf.add(new Paragraph(tituloPDF, tituloEstilo));
 		pdf.add(new Paragraph(""));
-		
-		if(conta.getTipoDeConta() != TipoDeConta.CREDITO) {
-			pdf.add(new Paragraph("Saldo: R$"+conta.getContaSaldo().getSaldo(), subTituloEstilo));
-			pdf.add(new Paragraph(""));
-		}
 		
 		pdf.add(new Paragraph("Entrou: R$"+ conta.getEntrou() + " | Saiu: R$"+conta.getSaiu(), subTituloEstilo));
 		pdf.add(new Paragraph(""));

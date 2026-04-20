@@ -12,10 +12,6 @@
 		<h:panelGroup id="info-movimentacao" styleClass="info-movimentacao-panel-group">
 		
 			<h:panelGroup styleClass="esquerda">
-				<h:panelGroup rendered="#{bean.conta.contaSaldo != null}">
-					<h2>Saldo: R$ #{bean.conta.contaSaldo.saldo}</h2>
-				</h:panelGroup>
-				
 				<h:panelGroup rendered="#{bean.conta.saiu ge bean.conta.entrou}">
 					<h3>#{bean.conta.feedback}: R$ #{bean.conta.totalMovimentado}</h3>
 				</h:panelGroup>

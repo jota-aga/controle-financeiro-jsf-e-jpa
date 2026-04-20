@@ -6,7 +6,6 @@
          
         <class>entity.Movimentacao</class>
         <class>entity.Conta</class>
-        <class>entity.ContaSaldo</class>
         
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

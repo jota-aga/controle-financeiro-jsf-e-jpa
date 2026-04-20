@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -39,9 +38,6 @@ public class Conta {
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "conta")
 	private List<Movimentacao> acoes;
-	
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "conta")
-	private ContaSaldo contaSaldo;
 	
 	@Transient
 	private BigDecimal totalMovimentado;
@@ -85,14 +81,6 @@ public class Conta {
 
 	public void setTipoDeConta(TipoDeConta tipoDeConta) {
 		this.tipoDeConta = tipoDeConta;
-	}
-
-	public ContaSaldo getContaSaldo() {
-		return contaSaldo;
-	}
-
-	public void setContaSaldo(ContaSaldo contaSaldo) {
-		this.contaSaldo = contaSaldo;
 	}
 
 	public BigDecimal getTotalMovimentado() {

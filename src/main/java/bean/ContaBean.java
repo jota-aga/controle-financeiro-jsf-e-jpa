@@ -48,15 +48,11 @@ public class ContaBean implements Serializable {
 	
 	public void prepararEdicao(Conta conta) {
 		this.conta = conta;
-		
-		if(conta.getTipoDeConta() != TipoDeConta.CREDITO) {
-			saldo = conta.getContaSaldo().getSaldo();
-		}
 	}
 	
 	public void salvarConta() {
 		
-		contaService.salvarConta(conta, saldo);
+		contaService.salvarConta(conta);
 		
 		FacesMessagesUtil.addMessageSemId(FacesMessage.SEVERITY_INFO, "Conta Salva", "Conta Salva Com Sucesso!");
 		RequestContext.getCurrentInstance().update("mainForm:growl");
