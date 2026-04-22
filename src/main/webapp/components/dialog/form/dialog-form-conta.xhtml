@@ -26,16 +26,6 @@
 				</p:selectOneMenu>
 			</h:panelGroup>
 			
-			<h:panelGroup id="saldoGroup">
-				<h:panelGroup rendered="#{bean.isContaPoupanca()}">
-					<p:message id="saldo-messages" for="saldo"/>
-					<p:outputLabel for="saldo" value="Saldo:" styleClass="outputs"/>
-					<br/>
-					<p:inputNumber id="saldo" minValue="0" symbolPosition="R$" value="#{bean.saldo}" inputStyle ="margin: 10px 0 10px 0" required="true"
-					requiredMessage="Saldo deve ser informado"/>
-				</h:panelGroup>
-			</h:panelGroup>	
-			
 			<p:commandButton actionListener="#{bean.salvarConta}" oncomplete="if(!args.validationFailed) PF('dialogContaWidgetVar').hide()" 
 			update="tabelaConta banco-messages tipo-de-conta-messages saldo-messages" process="@this dialogConta" value="Salvar" icon="fa fa-check" styleClass="botao-salvar"/>
 		</p:panelGrid>
